@@ -135,7 +135,6 @@ def evaluate(classifier_factory, k):
             for features in train_fold:
                 train_data.append(features)
         train_data = np.array(train_data)  # converstion to np array
-        # TODO chekc in debugger
         train_labels = []
         for j in range(k):
             if j != i:
