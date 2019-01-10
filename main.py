@@ -1,13 +1,11 @@
 import utils
 import classifier
 import decision_tree_classifier
+import perception_classifier
 
 
 def run_knn():
     ks = [1, 3, 5, 7, 13]
-
-    with open('experiments6.csv', 'w') as _:
-        pass
 
     with open('experiments6.csv', 'w+') as result_file:
         for k in ks:
@@ -20,12 +18,20 @@ def run_knn():
     print("FINISHED")
 
 
-def run_decision_tree():
-    decision_tree_factory = decision_tree_classifier.DecTreeClassifierFactory()
-    accuracy, error = utils.evaluate(decision_tree_factory, 2)
-    line = str(accuracy) + ',' + str(error)
-    print(line)
+def run_experiments():
+    with open('experiments12.csv', 'w+') as result_file:
+        decision_tree_factory = decision_tree_classifier.DecTreeClassifierFactory()
+        accuracy, error = utils.evaluate(decision_tree_factory, 2)
+        line = str(1) + ',' + str(accuracy) + ',' + str(error) + '\n'
+        result_file.write(line)
+        print("finished: ", 1)
+
+        perceptron_factory = perception_classifier.PercClassifierFactory()
+        accuracy, error = utils.evaluate(perceptron_factory, 2)
+        line = str(2) + ',' + str(accuracy) + ',' + str(error) + '\n'
+        result_file.write(line)
+        print("finished: ", 2)
 
 
 if __name__ == '__main__':
-    run_decision_tree()
+    run_experiments()
