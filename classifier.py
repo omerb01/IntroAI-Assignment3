@@ -1,4 +1,5 @@
 import hw3_utils
+import utils
 
 
 class knn_classifier(hw3_utils.abstract_classifier):
@@ -16,7 +17,7 @@ class knn_classifier(hw3_utils.abstract_classifier):
         '''
 
         labels_copy = self.labels.copy()
-        distance_list = [hw3_utils.euclidian_distance(features, obj) for obj in self.data]
+        distance_list = [utils.euclidian_distance(features, obj) for obj in self.data]
 
         counter = 0
         for i in range(self.k):
@@ -27,8 +28,8 @@ class knn_classifier(hw3_utils.abstract_classifier):
             distance_list.pop(index)
             labels_copy.pop(index)
         if float(counter / self.k) > 0.5:
-            return 0  # there are more sick people (we are closer to more than half True objs in classify matrix)
-        return 1
+            return 1  # there are more sick people (we are closer to more than half True objs in classify matrix)
+        return 0
 
 
 class knn_factory(hw3_utils.abstract_classifier_factory):
