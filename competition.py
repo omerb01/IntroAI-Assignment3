@@ -1,11 +1,10 @@
-import classifier
 from hw3_utils import load_data
+import classifier
 import numpy as np
 
 
-def evaluate_comp(classifier_factory, k, feature_index_to_ignore):
-    # load all folds
-    folds = [load_data('ecg_fold_' + str(i + 1) + '.pickle') for i in range(k)]
+def evaluate_comp(classifier_factory, folds, feature_index_to_ignore):
+    k = len(folds)
     folds = [(np.delete(data, feature_index_to_ignore, 1), labels, test) for data, labels, test in folds]
 
     accuracies = []
@@ -54,13 +53,26 @@ def evaluate_comp(classifier_factory, k, feature_index_to_ignore):
         accuracies.append((test_true_positive + test_true_negative) / N)
         errors.append((test_false_positive + test_false_negative) / N)
 
-    return np.average(accuracies), np.average(errors)
+    return feature_index_to_ignore, np.average(accuracies), np.average(errors)
 
 
 if __name__ == '__main__':
-    data = load_data()
-    for feature_index_to_ignore in range(len(data[0][0])):
-        knn_fac = classifier.knn_factory(1)
-        accuracy, error = evaluate_comp(knn_fac, 2, feature_index_to_ignore)
-        line = str(accuracy) + ',' + str(error)
-        print(line)
+
+    knn_fac = classifier.knn_factory(1)
+    folds = [load_data('ecg_fold_' + str(i + 1) + '.pickle') for i in range(2)]
+    features_num = len(folds[0][0][0])
+
+    max_accuracy_feature = None
+    for run_num in range(1, 8):
+
+        if max_accuracy_feature is not None:
+            folds = [(np.delete(data, max_accuracy_feature, 1), labels, test) for data, labels, test in folds]
+            features_num = len(folds[0][0][0])
+
+        results = [evaluate_comp(knn_fac, folds, feature) for feature in range(features_num)]
+        max_accuracy_feature = max(results, key=lambda item: item[1])[0]
+
+        with open('my_experiments' + str(run_num) + '.csv', 'w+') as result_file:
+            for feature, accuracy, error in results:
+                line = str(feature) + ',' + str(accuracy) + ',' + str(error) + '\n'
+                result_file.write(line)
