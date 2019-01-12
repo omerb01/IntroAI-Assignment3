@@ -80,9 +80,13 @@ def run_research():
 
 
 def run_my_classify():
+    # predicts the test data with specific features
+
     data, labels, tests = hw3_utils.load_data()
 
+    # features list to ignore that came from the research before
     features_to_ignore = [90, 23, 90, 103, 36]
+
     for feature in features_to_ignore:
         data = np.delete(data, feature, 1)
         tests = np.delete(tests, feature, 1)
