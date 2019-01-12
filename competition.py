@@ -1,4 +1,4 @@
-from hw3_utils import load_data
+import hw3_utils
 import classifier
 import numpy as np
 
@@ -56,10 +56,11 @@ def evaluate_comp(classifier_factory, folds, feature_index_to_ignore):
     return feature_index_to_ignore, np.average(accuracies), np.average(errors)
 
 
-if __name__ == '__main__':
+def run_research():
+    # a research to exam which feature is best to ignore for highest accuracy
 
     knn_fac = classifier.knn_factory(1)
-    folds = [load_data('ecg_fold_' + str(i + 1) + '.pickle') for i in range(2)]
+    folds = [hw3_utils.load_data('ecg_fold_' + str(i + 1) + '.pickle') for i in range(2)]
     features_num = len(folds[0][0][0])
 
     max_accuracy_feature = None
@@ -76,3 +77,21 @@ if __name__ == '__main__':
             for feature, accuracy, error in results:
                 line = str(feature) + ',' + str(accuracy) + ',' + str(error) + '\n'
                 result_file.write(line)
+
+
+def run_my_classify():
+    data, labels, tests = hw3_utils.load_data()
+
+    features_to_ignore = [90, 23, 90, 103, 36]
+    for feature in features_to_ignore:
+        data = np.delete(data, feature, 1)
+        tests = np.delete(tests, feature, 1)
+
+    clf = classifier.knn_factory(1).train(data, labels)
+    results = [clf.classify(test) for test in tests]
+
+    hw3_utils.write_prediction(results)
+
+
+if __name__ == '__main__':
+    run_my_classify()
